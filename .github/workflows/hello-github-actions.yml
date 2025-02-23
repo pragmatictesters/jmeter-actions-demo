@@ -32,4 +32,5 @@ jobs:
       - name: Run a multi-line script
         run: |
           echo Add other actions to build,
+          echo MINOR CHANGES
           echo JMeter with GitHub Action is COMPLETED.
