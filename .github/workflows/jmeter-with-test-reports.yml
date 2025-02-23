@@ -28,9 +28,6 @@ jobs:
       - name: Run JMeter test plan
         run: |
           mkdir -p results
-          mkdir -p test-results
-          mkdir -p test-reports
-          cd ~/jmeter/bin
           ~/jmeter/bin/jmeter -n -t test-plan/test-plan-jmeter-website.jmx -l results/results.csv -j results/jmeter.log -e -f -o results/reports
           mv ~/test-result.xml results/test-result.xml
       #Step 4: Save results as artifacts
