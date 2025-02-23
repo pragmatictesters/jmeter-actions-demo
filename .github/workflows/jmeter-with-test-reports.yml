@@ -1,25 +1,23 @@
 name: Run JMeter Tests with HTML Reports
 
 on:
-#  push:
-#    branches:
-#      - main  # Run tests on pushes to the main branch
   workflow_dispatch: # Allow manual trigger of this workflow
-env:
-  JMETER_VERSION: "5.6.3"
-  JMETER_HOME: "$HOME/jmeter"
 
 jobs:
   run-jmeter-tests:
     runs-on: ubuntu-latest
+
+    env:
+      JMETER_VERSION: "5.6.3"
+      JMETER_HOME: "${HOME}/jmeter"
 
     steps:
       # Step 1: Checkout the repository
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      # Step 2: Install JDK
-      - name: Install JDK
+      # Step 2: Install JDK and required tools
+      - name: Install JDK and wget
         run: |
           sudo apt-get update
           sudo apt-get install -y default-jdk wget
@@ -29,26 +27,27 @@ jobs:
         run: |
           wget https://downloads.apache.org/jmeter/binaries/apache-jmeter-${JMETER_VERSION}.tgz
           tar -xvzf apache-jmeter-${JMETER_VERSION}.tgz
+          mkdir -p ${JMETER_HOME}  # Ensure directory exists before moving
           mv apache-jmeter-${JMETER_VERSION} ${JMETER_HOME}
 
-
-      # Step 4: Run JMeter test plan and
+      # Step 4: Run JMeter test plan and generate HTML reports
       - name: Run JMeter test plan and generate HTML reports
         run: |
           mkdir -p results
           ${JMETER_HOME}/bin/jmeter -n -t test-plan/test-plan-jmeter-website.jmx -l results/results.csv -j results/jmeter.log -e -f -o results/reports
 
-      # Step 5 : Move XML test result file to results folder
+      # Step 5: Move XML test result file to results folder (if exists)
       - name: Move test-result.xml
         run: |
-          mv $GITHUB_WORKSPACE/test-result.xml results/test-result.xml
+          if [ -f "$GITHUB_WORKSPACE/test-result.xml" ]; then
+            mv "$GITHUB_WORKSPACE/test-result.xml" results/test-result.xml
+          else
+            echo "Warning: test-result.xml not found!"
+          fi
 
-
-
-      #Step 6: Save results as artifacts
+      # Step 6: Save results as artifacts
       - name: Upload results folder as artifacts
         uses: actions/upload-artifact@v4
         with:
           name: jmeter-results
-          path: |
-            results/
+          path: results
