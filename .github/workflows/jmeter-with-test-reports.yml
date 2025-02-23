@@ -11,7 +11,7 @@ jobs:
       JMETER_VERSION: "5.6.3"
       JMETER_HOME: "${HOME}/jmeter"
       TEST_PLAN_PATH: "test-plan/test-plan-jmeter-website.jmx"
-      TEST_REPORT_FOLDER: "reports"
+      TEST_REPORT_FOLDER: "results"
 
 
     steps:
@@ -43,7 +43,7 @@ jobs:
       - name: Move test-result.xml
         run: |
           if [ -f "$GITHUB_WORKSPACE/test-result.xml" ]; then
-            mv "$GITHUB_WORKSPACE/test-result.xml" results/test-result.xml
+            mv "$GITHUB_WORKSPACE/test-result.xml" ${{ env.TEST_REPORT_FOLDER }}/test-result.xml
           else
             echo "Warning: test-result.xml not found!"
           fi
