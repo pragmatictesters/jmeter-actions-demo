@@ -1,4 +1,4 @@
-name: Run Basic JMeter Tests to Demo GitHub Integration
+name: Run JMeter Tests with HTML Reports
 
 on:
 #  push:
