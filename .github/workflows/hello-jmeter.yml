@@ -1,0 +1,41 @@
+name: Run Basic JMeter Tests to Demo GitHub Integration
+
+on:
+  push:
+    branches:
+      - main  # Run tests on pushes to the main branch
+  workflow_dispatch: # Allow manual trigger of this workflow
+
+jobs:
+  run-jmeter-tests:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step 1: Checkout the repository
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      # Step 2: Install JMeter
+      - name: Install JMeter
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y default-jdk wget
+          wget https://downloads.apache.org/jmeter/binaries/apache-jmeter-5.6.3.tgz
+          tar -xvzf apache-jmeter-5.6.3.tgz
+          mv apache-jmeter-5.6.3 ~/jmeter
+
+      # Step 3: Run JMeter test plan
+      - name: Run JMeter test plan
+        run: |
+          mkdir -p results
+          mkdir -p test-results
+          ~/jmeter/bin/jmeter -n -t test-plan/test-plan-jmter-website.jmx -l results/results.xml -j results/jmeter.log
+
+      # Step 4: Save results as artifacts
+      - name: Upload results folder as artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: jmeter-results-and-test-results
+          path: |
+            results/
+            test-results/
