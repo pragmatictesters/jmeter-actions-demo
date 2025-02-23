@@ -1,9 +1,9 @@
 name: Run Basic JMeter Tests to Demo GitHub Integration
 
 on:
-  push:
-    branches:
-      - main  # Run tests on pushes to the main branch
+#  push:
+#    branches:
+#      - main  # Run tests on pushes to the main branch
   workflow_dispatch: # Allow manual trigger of this workflow
 
 jobs:
