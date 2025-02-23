@@ -36,7 +36,7 @@ jobs:
       - name: Copy JMeter plugins, libraries and test data
         run: |
           echo "Copying test data to ~/jmeter/bin folder"
-          cp -r ./test-data/* ~/jmeter/bin/  
+          cp -r ./test-data/* ./test-plan/
           echo "Copying plugins to lib/ext folder"
           cp -r ./lib/ext/* ~/jmeter/lib/ext/  
           echo "Copying libraries to lib folder"
