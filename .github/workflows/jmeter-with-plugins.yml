@@ -1,0 +1,64 @@
+name: Run JMeter Tests with HTML Reports
+
+on:
+  workflow_dispatch: # Allow manual trigger of this workflow
+
+jobs:
+  run-jmeter-tests:
+    runs-on: ubuntu-latest
+
+    env:
+      JMETER_VERSION: "5.6.3"
+      JMETER_HOME: "${HOME}/jmeter"
+      TEST_PLAN_PATH: "test-plan-example-plugins.jmx"
+      TEST_REPORT_FOLDER: "results"
+
+
+    steps:
+      # Step 1: Checkout the repository
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      # Step 2: Install JDK and required tools
+      - name: Install JDK and wget
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y default-jdk wget
+
+      # Step 3: Install JMeter
+      - name: Install JMeter
+        run: |
+          wget https://downloads.apache.org/jmeter/binaries/apache-jmeter-${JMETER_VERSION}.tgz
+          tar -xvzf apache-jmeter-${JMETER_VERSION}.tgz
+          mv apache-jmeter-${JMETER_VERSION} ~/jmeter
+          
+      # Step 4: Copy JMeter Plugins from repository to JMeter lib and lib/ext
+      - name: Copy JMeter Plugins and Libraries
+        run: |
+          echo "Copying plugins to lib/ext folder"
+          cp -r ./lib/ext/* ~/jmeter/lib/ext/  
+          echo "Copying libraries to lib folder"
+          cp -r ./lib/* ~/jmeter/lib/  
+
+      # Step 5: Run JMeter test plan and generate HTML reports
+      - name: Run JMeter test plan and generate HTML reports
+        run: |
+          mkdir -p ${{ env.TEST_REPORT_FOLDER }}
+          $HOME/jmeter/bin/jmeter -n -t ${{ env.TEST_PLAN_PATH }} -l ${{ env.TEST_REPORT_FOLDER }}/results.csv -j ${{ env.TEST_REPORT_FOLDER }}/jmeter.log -e -f -o ${{ env.TEST_REPORT_FOLDER }}/reports
+
+
+      # Step 6: Move XML test result file to results folder (if exists)
+      - name: Move test-result.xml
+        run: |
+          if [ -f "$GITHUB_WORKSPACE/test-result.xml" ]; then
+            mv "$GITHUB_WORKSPACE/test-result.xml" ${{ env.TEST_REPORT_FOLDER }}/test-result.xml
+          else
+            echo "Warning: test-result.xml not found!"
+          fi
+
+      # Step 7: Save results as artifacts
+      - name: Upload results folder as artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: jmeter-results
+          path: ${{ env.TEST_REPORT_FOLDER }}
