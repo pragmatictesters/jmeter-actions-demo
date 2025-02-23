@@ -10,7 +10,7 @@ jobs:
     env:
       JMETER_VERSION: "5.6.3"
       JMETER_HOME: "${HOME}/jmeter"
-      TEST_PLAN_PATH: "test-plan-example-plugins.jmx"
+      TEST_PLAN_PATH: "test-plan/test-plan-example-plugins.jmx"
       TEST_REPORT_FOLDER: "results"
 
 
