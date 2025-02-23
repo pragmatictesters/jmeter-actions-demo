@@ -10,6 +10,9 @@ jobs:
     env:
       JMETER_VERSION: "5.6.3"
       JMETER_HOME: "${HOME}/jmeter"
+      TEST_PLAN_PATH: "test-plan/test-plan-jmeter-website.jmx"
+      TEST_REPORT_FOLDER: "reports"
+
 
     steps:
       # Step 1: Checkout the repository
@@ -27,14 +30,13 @@ jobs:
         run: |
           wget https://downloads.apache.org/jmeter/binaries/apache-jmeter-${JMETER_VERSION}.tgz
           tar -xvzf apache-jmeter-${JMETER_VERSION}.tgz
-          mkdir -p ${JMETER_HOME}  # Ensure directory exists before moving
-          mv apache-jmeter-${JMETER_VERSION} ${JMETER_HOME}
+          mv apache-jmeter-${JMETER_VERSION} ~/jmeter
 
       # Step 4: Run JMeter test plan and generate HTML reports
       - name: Run JMeter test plan and generate HTML reports
         run: |
-          mkdir -p results
-          ${JMETER_HOME}/bin/jmeter -n -t test-plan/test-plan-jmeter-website.jmx -l results/results.csv -j results/jmeter.log -e -f -o results/reports
+          mkdir -p ${TEST_REPORT_FOLDER}
+          ~/jmeter/bin/jmeter -n -t ${TEST_PLAN} -l ${TEST_REPORT_FOLDER}/results.csv -j ${TEST_REPORT_FOLDER}/jmeter.log -e -f -o ${TEST_REPORT_FOLDER}/reports
 
       # Step 5: Move XML test result file to results folder (if exists)
       - name: Move test-result.xml
@@ -50,4 +52,4 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: jmeter-results
-          path: results
+          path: ${TEST_REPORT_FOLDER}
