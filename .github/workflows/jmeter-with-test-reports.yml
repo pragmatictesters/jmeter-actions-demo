@@ -35,8 +35,9 @@ jobs:
       # Step 4: Run JMeter test plan and generate HTML reports
       - name: Run JMeter test plan and generate HTML reports
         run: |
-          mkdir -p ${TEST_REPORT_FOLDER}
-          ~/jmeter/bin/jmeter -n -t ${TEST_PLAN} -l ${TEST_REPORT_FOLDER}/results.csv -j ${TEST_REPORT_FOLDER}/jmeter.log -e -f -o ${TEST_REPORT_FOLDER}/reports
+          mkdir -p ${{ env.TEST_REPORT_FOLDER }}
+          $HOME/jmeter/bin/jmeter -n -t ${{ env.TEST_PLAN_PATH }} -l ${{ env.TEST_REPORT_FOLDER }}/results.csv -j ${{ env.TEST_REPORT_FOLDER }}/jmeter.log -e -f -o ${{ env.TEST_REPORT_FOLDER }}/reports
+
 
       # Step 5: Move XML test result file to results folder (if exists)
       - name: Move test-result.xml
@@ -52,4 +53,4 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: jmeter-results
-          path: ${TEST_REPORT_FOLDER}
+          path: ${{ env.TEST_REPORT_FOLDER }}
