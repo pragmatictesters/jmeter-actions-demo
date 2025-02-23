@@ -10,7 +10,7 @@ jobs:
     env:
       JMETER_VERSION: "5.6.3"
       JMETER_HOME: "${HOME}/jmeter"
-      TEST_PLAN_PATH: "test-plan/jmeter-with-csv-data-driven-tests.yml"
+      TEST_PLAN_PATH: "test-plan/test-plan-example-data-driven-test-csv.jmx"
       TEST_REPORT_FOLDER: "results"
 
 
