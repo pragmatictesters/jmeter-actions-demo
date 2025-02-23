@@ -15,7 +15,13 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      # Step 2: Install JMeter
+      # Step 2: Install JDK
+      - name: Install JDK
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y default-jdk wget
+
+      # Step 3: Install JMeter
       - name: Install JMeter
         run: |
           sudo apt-get update
@@ -24,13 +30,21 @@ jobs:
           tar -xvzf apache-jmeter-5.6.3.tgz
           mv apache-jmeter-5.6.3 ~/jmeter
 
-      # Step 3: Run JMeter test plan
-      - name: Run JMeter test plan
+
+      # Step 4: Run JMeter test plan and
+      - name: Run JMeter test plan and generate HTML reports
         run: |
           mkdir -p results
           ~/jmeter/bin/jmeter -n -t test-plan/test-plan-jmeter-website.jmx -l results/results.csv -j results/jmeter.log -e -f -o results/reports
-          mv /home/runner/work/jmeter-actions-demo/jmeter-actions-demo/test-result.xml results/test-result.xml
-      #Step 4: Save results as artifacts
+
+      # Step 5 : Move XML test result file to results folder
+      - name: Move test-result.xml
+        run: |
+          mv $GITHUB_WORKSPACE/test-result.xml results/test-result.xml
+
+
+
+      #Step 6: Save results as artifacts
       - name: Upload results folder as artifacts
         uses: actions/upload-artifact@v4
         with:
