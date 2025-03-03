@@ -10,6 +10,17 @@ Welcome to the **JMeter GitHub Actions Integration** project! This repository de
 - 🖥 **Selenium WebDriver Integration** – Combine functional and performance testing
 - 📡 **API Testing & Load Simulations** – Comprehensive performance testing
 
+## 📌 Status of the workflows
+- [![01-Hello GitHub Actions](https://github.com/pragmatictesters/jmeter-actions-demo/actions/workflows/01-basic-github-actions-example.yml/badge.svg)](https://github.com/pragmatictesters/jmeter-actions-demo/actions/workflows/01-basic-github-actions-example.yml)
+- [![02-Execute a JMeter Test Plan and Archive Results](https://github.com/pragmatictesters/jmeter-actions-demo/actions/workflows/02-basic-jmeter-execution-example.yml/badge.svg)](https://github.com/pragmatictesters/jmeter-actions-demo/actions/workflows/02-basic-jmeter-execution-example.yml)
+- [![03-Run JMeter Tests with HTML Reports](https://github.com/pragmatictesters/jmeter-actions-demo/actions/workflows/03-archive-test-results.yml/badge.svg)](https://github.com/pragmatictesters/jmeter-actions-demo/actions/workflows/03-archive-test-results.yml)
+- [![04-Run JMeter Tests with Plugins](https://github.com/pragmatictesters/jmeter-actions-demo/actions/workflows/04-tests-with-plugins-example.yml/badge.svg)](https://github.com/pragmatictesters/jmeter-actions-demo/actions/workflows/04-tests-with-plugins-example.yml)
+- [![05-Run JMeter Tests with properties](https://github.com/pragmatictesters/jmeter-actions-demo/actions/workflows/05-test-with-jmeter-properties.yml/badge.svg)](https://github.com/pragmatictesters/jmeter-actions-demo/actions/workflows/05-test-with-jmeter-properties.yml)
+- [![06-Run JMeter Tests with CSV test data](https://github.com/pragmatictesters/jmeter-actions-demo/actions/workflows/06-data-driven-test-csv-example.yml/badge.svg)](https://github.com/pragmatictesters/jmeter-actions-demo/actions/workflows/06-data-driven-test-csv-example.yml)
+- [![07-Run the steps based on the event schedule](https://github.com/pragmatictesters/jmeter-actions-demo/actions/workflows/07-basic-on-schedule-example.yml/badge.svg)](https://github.com/pragmatictesters/jmeter-actions-demo/actions/workflows/07-basic-on-schedule-example.yml)
+- [![08-Run tests with user inputs](https://github.com/pragmatictesters/jmeter-actions-demo/actions/workflows/08-run-tests-with-user-inputs.yml/badge.svg)](https://github.com/pragmatictesters/jmeter-actions-demo/actions/workflows/08-run-tests-with-user-inputs.yml)
+- [![09-Run tests with cached JMeter installation if available](https://github.com/pragmatictesters/jmeter-actions-demo/actions/workflows/09-chache-jmeter-installation-example.yml/badge.svg)](https://github.com/pragmatictesters/jmeter-actions-demo/actions/workflows/09-chache-jmeter-installation-example.yml)
+
 ## 🚀 How to Use
 1. **Clone the Repository**
    ```bash
