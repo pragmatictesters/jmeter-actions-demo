@@ -4,10 +4,10 @@ name: Hello GitHub Actions
 # Controls when the workflow will run
 on:
   # Triggers the workflow on push or pull request events but only for the "main" branch
-#  push:
-#    branches: [ "main" ]
-#  pull_request:
-#    branches: [ "main" ]
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
@@ -35,3 +35,10 @@ jobs:
           echo Add other actions to build,
           echo MINOR CHANGES
           echo JMeter with GitHub Action is COMPLETED.
+
+      # Demonstrate how to store and output values using GitHub Actions variables
+      - name: Store an output value
+        run: echo "MY_VAR=GitHub_Actions_Learning" >> $GITHUB_ENV
+
+      - name: Use the output value
+        run: echo "This is my stored variable $MY_VAR"
