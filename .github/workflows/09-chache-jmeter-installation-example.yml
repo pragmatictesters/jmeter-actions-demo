@@ -1,4 +1,4 @@
-name: 03-Run JMeter Tests with HTML Reports
+name: 09-Run tests with cached JMeter installation if available
 
 on:
   workflow_dispatch: # Allow manual trigger of this workflow
