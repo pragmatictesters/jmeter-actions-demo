@@ -1,4 +1,4 @@
-name: Run Basic JMeter Tests to Demo GitHub Integration
+name: 02-Execute a JMeter Test Plan and Archive Results
 
 on:
 #  push:
@@ -13,7 +13,7 @@ jobs:
     steps:
       # Step 1: Checkout the repository
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       # Step 2: Install JMeter
       - name: Install JMeter
@@ -23,19 +23,35 @@ jobs:
           wget https://downloads.apache.org/jmeter/binaries/apache-jmeter-5.6.3.tgz
           tar -xvzf apache-jmeter-5.6.3.tgz
           mv apache-jmeter-5.6.3 ~/jmeter
+#          sudo apt-get install -y jmeter # This can be used to install JMeter directly avoiding extractions
 
-      # Step 3: Run JMeter test plan
+      # Step 3: Validate if JMeter test plan exists
+      - name: Validate JMeter test plan exists
+        run: |
+          if [ ! -f test-plan/test-plan-jmeter-website.jmx ]; then
+            echo "Error: JMeter test plan not found!"
+            exit 1
+          fi
+
+      # Step 4: Run JMeter test plan
       - name: Run JMeter test plan
         run: |
-          mkdir -p results
-          mkdir -p test-results
-          ~/jmeter/bin/jmeter -n -t test-plan/test-plan-jmeter-website.jmx -l results/results.csv -j results/jmeter.log
+          mkdir -p results test-results
+#         ~/jmeter/bin/jmeter -n -t test-plan/test-plan-jmeter-website.jmx -l results/results.csv -j results/jmeter.log
+#          ~/jmeter/bin/jmeter -n -t test-plan/test-plan-jmeter-website.jmx -l results/results.csv -j results/jmeter.log || (echo "JMeter execution failed!" && cat results/jmeter.log && exit 1)
+          ~/jmeter/bin/jmeter \
+          -n \
+          -t test-plan/test-plan-jmeter-website.jmx \
+          -l results/results.csv \
+          -j results/jmeter.log || ( \
+              echo "JMeter execution failed!" && \
+              cat results/jmeter.log && \
+          exit 1 \
+          )
 
-      #Step 4: Save results as artifacts
-#      - name: Upload results folder as artifacts
-#        uses: actions/upload-artifact@v3
-#        with:
-#          name: jmeter-results-and-test-results
-#          path: |
-#            results/
-#            test-results/
+      #Step 5: Save results as artifacts
+      - name: Upload results folder as artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: jmeter-results
+          path: results/
