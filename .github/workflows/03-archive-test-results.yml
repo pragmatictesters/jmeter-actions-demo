@@ -45,7 +45,6 @@ jobs:
       - name: Run JMeter test plan and generate HTML reports
         run: |
           mkdir -p ${{ env.TEST_REPORT_FOLDER }}
-          mkdir -p ${{ env.TEST_REPORT_FOLDER }}
           $HOME/jmeter/bin/jmeter \
           -n \
           -t ${{ env.TEST_PLAN_PATH }} \
