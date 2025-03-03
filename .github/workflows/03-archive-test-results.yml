@@ -1,4 +1,4 @@
-name: Run JMeter Tests with HTML Reports
+name: 03-Run JMeter Tests with HTML Reports
 
 on:
   workflow_dispatch: # Allow manual trigger of this workflow
@@ -17,7 +17,7 @@ jobs:
     steps:
       # Step 1: Checkout the repository
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       # Step 2: Install JDK and required tools
       - name: Install JDK and wget
@@ -32,23 +32,43 @@ jobs:
           tar -xvzf apache-jmeter-${JMETER_VERSION}.tgz
           mv apache-jmeter-${JMETER_VERSION} ~/jmeter
 
-      # Step 4: Run JMeter test plan and generate HTML reports
+      # Step 4: Check if JMX exists in the given path
+      - name: Validate JMeter test plan
+        run: |
+          if [ ! -f "${{ env.TEST_PLAN_PATH }}" ]; then
+            echo "Error: JMeter test plan not found at ${{ env.TEST_PLAN_PATH }}!"
+            exit 1
+          fi
+
+
+      # Step 5: Run JMeter test plan and generate HTML reports
       - name: Run JMeter test plan and generate HTML reports
         run: |
           mkdir -p ${{ env.TEST_REPORT_FOLDER }}
-          $HOME/jmeter/bin/jmeter -n -t ${{ env.TEST_PLAN_PATH }} -l ${{ env.TEST_REPORT_FOLDER }}/results.csv -j ${{ env.TEST_REPORT_FOLDER }}/jmeter.log -e -f -o ${{ env.TEST_REPORT_FOLDER }}/reports
+          mkdir -p ${{ env.TEST_REPORT_FOLDER }}
+          $HOME/jmeter/bin/jmeter \
+          -n \
+          -t ${{ env.TEST_PLAN_PATH }} \
+          -l ${{ env.TEST_REPORT_FOLDER }}/results.csv \
+          -j ${{ env.TEST_REPORT_FOLDER }}/jmeter.log \
+          -e -f \
+          -o ${{ env.TEST_REPORT_FOLDER }}/reports || ( \
+          echo "JMeter execution failed! Check logs." && \
+          cat ${{ env.TEST_REPORT_FOLDER }}/jmeter.log && \
+          exit 1 \
+          )
 
-
-      # Step 5: Move XML test result file to results folder (if exists)
-      - name: Move test-result.xml
+      # Step 6: Move XML test result file to results folder (if exists)
+      - name: Move test-result.xml if available
         run: |
           if [ -f "$GITHUB_WORKSPACE/test-result.xml" ]; then
             mv "$GITHUB_WORKSPACE/test-result.xml" ${{ env.TEST_REPORT_FOLDER }}/test-result.xml
+            echo "test-result.xml moved successfully."
           else
             echo "Warning: test-result.xml not found!"
           fi
 
-      # Step 6: Save results as artifacts
+      # Step 7: Save results as artifacts
       - name: Upload results folder as artifacts
         uses: actions/upload-artifact@v4
         with:
