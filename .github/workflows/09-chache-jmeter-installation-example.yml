@@ -19,11 +19,12 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      # Step 2: Install JDK and required tools
-      - name: Install JDK and wget
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y default-jdk wget
+       # Step 2: Install JDK and required tools
+      - name: Set up JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '21'
 
       # Step 3: Cache JMeter installation
       - name: Cache JMeter
