@@ -8,9 +8,17 @@ on:
         required: true
         default: "test-plan/test-plan-jmeter-website.jmx"
       jmeter_version:
-        description: "JMeter Version"
+        description: "Select JMeter Version"
         required: true
         default: "5.6.3"
+        type: choice
+        options:
+          - "5.6.4"
+          - "5.6.3"
+          - "5.6.2"
+          - "5.6.1"
+          - "5.5"
+          - "5.4.3"
 
 jobs:
   run-jmeter-tests:
@@ -26,9 +34,22 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y default-jdk wget
-          wget https://downloads.apache.org/jmeter/binaries/apache-jmeter-${{ github.event.inputs.jmeter_version }}.tgz
-          tar -xvzf apache-jmeter-${{ github.event.inputs.jmeter_version }}.tgz
-          mv apache-jmeter-${{ github.event.inputs.jmeter_version }} ~/jmeter
+
+          JMETER_VERSION=${{ github.event.inputs.jmeter_version }}
+          JMETER_URL="https://downloads.apache.org/jmeter/binaries/apache-jmeter-${JMETER_VERSION}.tgz"
+          ARCHIVE_URL="https://archive.apache.org/dist/jmeter/binaries/apache-jmeter-${JMETER_VERSION}.tgz"
+
+          # Try main site first, fallback to archive if not found
+          if wget --spider $JMETER_URL 2>/dev/null; then
+            wget $JMETER_URL
+          else
+            echo "Version not found on main site, downloading from archive..."
+            wget $ARCHIVE_URL
+          fi
+
+          tar -xvzf apache-jmeter-${JMETER_VERSION}.tgz
+          mv apache-jmeter-${JMETER_VERSION} ~/jmeter
+
 
       # Step 3: Validate if JMeter test plan exists
       - name: Validate JMeter test plan exists
