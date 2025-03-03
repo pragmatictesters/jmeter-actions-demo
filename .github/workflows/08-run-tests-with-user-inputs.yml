@@ -1,0 +1,60 @@
+name: 08-Run tests with user inputs
+
+on:
+  workflow_dispatch:
+    inputs:
+      test_plan:
+        description: "JMeter Test Plan Name (Relative Path)"
+        required: true
+        default: "test-plan/test-plan-jmeter-website.jmx"
+      jmeter_version:
+        description: "JMeter Version"
+        required: true
+        default: "5.6.3"
+
+jobs:
+  run-jmeter-tests:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step 1: Checkout the repository
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # Step 2: Install JMeter
+      - name: Install JMeter
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y default-jdk wget
+          wget https://downloads.apache.org/jmeter/binaries/apache-jmeter-${{ github.event.inputs.jmeter_version }}.tgz
+          tar -xvzf apache-jmeter-${{ github.event.inputs.jmeter_version }}.tgz
+          mv apache-jmeter-${{ github.event.inputs.jmeter_version }} ~/jmeter
+
+      # Step 3: Validate if JMeter test plan exists
+      - name: Validate JMeter test plan exists
+        run: |
+          if [ ! -f ${{ github.event.inputs.test_plan }} ]; then
+            echo "Error: JMeter test plan '${{ github.event.inputs.test_plan }}' not found!"
+            exit 1
+          fi
+
+      # Step 4: Run JMeter test plan
+      - name: Run JMeter test plan
+        run: |
+          mkdir -p results test-results
+          ~/jmeter/bin/jmeter \
+          -n \
+          -t ${{ github.event.inputs.test_plan }} \
+          -l results/results.csv \
+          -j results/jmeter.log || ( \
+          echo "JMeter execution failed!" && \
+          cat results/jmeter.log && \
+          exit 1 \
+          )
+
+      # Step 5: Save results as artifacts
+      - name: Upload results folder as artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: jmeter-results
+          path: results/
