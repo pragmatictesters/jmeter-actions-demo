@@ -33,19 +33,21 @@ jobs:
             exit 1
           fi
 
+#         ~/jmeter/bin/jmeter -n -t test-plan/test-plan-jmeter-website.jmx -l results/results.csv -j results/jmeter.log
+#         ~/jmeter/bin/jmeter -n -t test-plan/test-plan-jmeter-website.jmx -l results/results.csv -j results/jmeter.log || (echo "JMeter execution failed!" && cat results/jmeter.log && exit 1)
+
+
       # Step 4: Run JMeter test plan
       - name: Run JMeter test plan
         run: |
           mkdir -p results test-results
-#         ~/jmeter/bin/jmeter -n -t test-plan/test-plan-jmeter-website.jmx -l results/results.csv -j results/jmeter.log
-#          ~/jmeter/bin/jmeter -n -t test-plan/test-plan-jmeter-website.jmx -l results/results.csv -j results/jmeter.log || (echo "JMeter execution failed!" && cat results/jmeter.log && exit 1)
           ~/jmeter/bin/jmeter \
           -n \
           -t test-plan/test-plan-jmeter-website.jmx \
           -l results/results.csv \
           -j results/jmeter.log || ( \
-              echo "JMeter execution failed!" && \
-              cat results/jmeter.log && \
+          echo "JMeter execution failed!" && \
+          cat results/jmeter.log && \
           exit 1 \
           )
 
