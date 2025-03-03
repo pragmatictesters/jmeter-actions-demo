@@ -1,4 +1,4 @@
-name: Run JMeter Tests with properties
+name: 05-Run JMeter Tests with properties
 
 on:
   workflow_dispatch: # Allow manual trigger of this workflow
