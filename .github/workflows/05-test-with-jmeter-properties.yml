@@ -48,7 +48,7 @@ jobs:
       - name: Run JMeter test plan and generate HTML reports
         run: |
           mkdir -p ${{ env.TEST_REPORT_FOLDER }}
-           $HOME/jmeter/bin/jmeter \
+          $HOME/jmeter/bin/jmeter \
           -n \
           -t ${{ env.TEST_PLAN_PATH }} \
           -l ${{ env.TEST_REPORT_FOLDER }}/results.csv \
@@ -59,7 +59,6 @@ jobs:
           cat ${{ env.TEST_REPORT_FOLDER }}/jmeter.log && \
           exit 1 \
           )
-
 
       # Step 6: Move XML test result file to results folder (if exists)
       - name: Move test-result.xml
