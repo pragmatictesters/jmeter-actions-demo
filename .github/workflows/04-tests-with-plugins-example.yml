@@ -1,4 +1,4 @@
-name: Run JMeter Tests with Plugins
+name: 04-Run JMeter Tests with Plugins
 
 on:
   workflow_dispatch: # Allow manual trigger of this workflow
@@ -17,7 +17,7 @@ jobs:
     steps:
       # Step 1: Checkout the repository
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       # Step 2: Install JDK and required tools
       - name: Install JDK and wget
@@ -44,14 +44,24 @@ jobs:
       - name: Run JMeter test plan and generate HTML reports
         run: |
           mkdir -p ${{ env.TEST_REPORT_FOLDER }}
-          $HOME/jmeter/bin/jmeter -n -t ${{ env.TEST_PLAN_PATH }} -l ${{ env.TEST_REPORT_FOLDER }}/results.csv -j ${{ env.TEST_REPORT_FOLDER }}/jmeter.log -e -f -o ${{ env.TEST_REPORT_FOLDER }}/reports
-
+          $HOME/jmeter/bin/jmeter \
+          -n \
+          -t ${{ env.TEST_PLAN_PATH }} \
+          -l ${{ env.TEST_REPORT_FOLDER }}/results.csv \
+          -j ${{ env.TEST_REPORT_FOLDER }}/jmeter.log \
+          -e -f \
+          -o ${{ env.TEST_REPORT_FOLDER }}/reports || ( \
+          echo "JMeter execution failed! Check logs." && \
+          cat ${{ env.TEST_REPORT_FOLDER }}/jmeter.log && \
+          exit 1 \
+          )
 
       # Step 6: Move XML test result file to results folder (if exists)
-      - name: Move test-result.xml
+      - name: Move test-result.xml if available
         run: |
           if [ -f "$GITHUB_WORKSPACE/test-result.xml" ]; then
             mv "$GITHUB_WORKSPACE/test-result.xml" ${{ env.TEST_REPORT_FOLDER }}/test-result.xml
+            echo "test-result.xml moved successfully."
           else
             echo "Warning: test-result.xml not found!"
           fi
@@ -61,4 +71,4 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: jmeter-results
-          path: ${{ env.TEST_REPORT_FOLDER }}
+          path: ${{ env.TEST_REPORT_FOLDER }}/
