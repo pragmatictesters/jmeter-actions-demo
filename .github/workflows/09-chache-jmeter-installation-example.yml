@@ -29,10 +29,11 @@ jobs:
       - name: Cache JMeter
         uses: actions/cache@v4
         with:
-          path: ~/.cache/jmeter
-          key: jmeter-${{ env.JMETER_VERSION }}
+          path: ~/jmeter  # Corrected path
+          key: jmeter-${{ env.JMETER_VERSION }}-{{ hashFiles('**/jmeter-dependencies.txt') }}
           restore-keys: |
             jmeter-${{ env.JMETER_VERSION }}-
+            jmeter-
 
       # Step 4: Install JMeter (if not cached)
       - name: Install JMeter
